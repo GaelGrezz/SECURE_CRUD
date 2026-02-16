@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 import mysql.connector as conn 
-from sqlalchemy import create_engine
+from sqlalchemy import MetaData, Table, create_engine
 from sqlalchemy.orm import sessionmaker, Session, DeclarativeBase
 
 load_dotenv()
@@ -19,6 +19,9 @@ engine = create_engine(DATABASE_URL,
     max_overflow=10,
     **engine_kargs)
 
+metadata = MetaData()
+T_CRUD = Table("CRUD", metadata, autoload_with=engine)
+
 
 session_local = sessionmaker(
     bind=engine, 
@@ -35,10 +38,3 @@ def get_DB():
         db.rollback()
     finally:
         db.close()
-
-def test_sqlalchemy():
-    try:
-        with engine.connect() as conn:
-            print("Conexión lograda en: ", conn)
-    except Exception as e:
-        print("Error")
