@@ -2,6 +2,7 @@ from pydantic import ValidationError
 from sqlalchemy import Table
 from sqlalchemy.orm import Session
 
+from utils.u_d_segurity import DataUDSecurity
 from utils.c_segurity import DataInsertSecurity
 from models.schemas import M_CRUD, M_U_CRUD, M_UUID
 
@@ -75,7 +76,7 @@ class BaseCRUD:
             self.db.rollback()
             raise e
 
-    def delete(self, s_text: str):
+    def delete(self, r_id:M_UUID):
         self.db.execute(self.table.update().where(
-            self.table.c.text == s_text).values(status=0))
+            self.table.c.id == str(UUID(r_id))).values(status=0))
         self.db.commit()
