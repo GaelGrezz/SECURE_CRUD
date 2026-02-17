@@ -15,6 +15,10 @@ def create_app() -> FastAPI:
     @app.middleware("http")
     async def rate_limiter(request: Request, call_next):
         client_ip = request.client.host
+        
+        if client_ip == "127.0.0.1": # <- ! Quitar de dev
+            return await call_next(request)
+        
         now = time.time()
         
         if client_ip not in requests_log:
