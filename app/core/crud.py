@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from ..utils.enc_segurity import DataEncryptionService
 from ..utils.c_segurity import DataInsertSecurity
-from ..models.schemas import M_CRUD, M_U_CRUD, M_UUID
+from ..models.schemas import  M_IP_CRUD, M_U_CRUD, M_UUID
 
 from sqlalchemy.exc import SQLAlchemyError
 from uuid import UUID
@@ -15,17 +15,18 @@ class BaseCRUD:
         self.db = db
         self.table = table
 
-    def create(self, data: M_CRUD):
+    def create(self, data: M_U_CRUD, ip: M_IP_CRUD):
         try:
             """
             Crear registro validado por el modelo CRUD.
             """
             data = data.model_dump()
 
+            data["ip"] = ip
+
             data["text"] = DataInsertSecurity.canonicalize_text(data["text"])
 
             DataInsertSecurity.validate_text(data["text"])
-            # DataInsertSecurity.validate_status(data["status"])
             DataInsertSecurity.validate_ip(data["ip"])
 
             # ! Cifrado

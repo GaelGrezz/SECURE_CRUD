@@ -15,18 +15,6 @@ class M_CRUD(BaseModel):
         alias="campo content"
     )
     
-    # status: StrictInt = Field(
-    #     ...,
-    #     description="Estado lógico del registro (1 = activo, 0 = inactivo)."
-    # )
-    
-    ip: IPvAnyAddress = Field(
-        ...,
-        description="Dirección IP del cliente que genera el registro.",
-        examples=["127.0.0.1"],
-        alias="campo ip"
-    )
-    
     model_config = {
         "str_strip_whitespace": True,
         "extra": "forbid"
@@ -52,15 +40,22 @@ class M_CRUD(BaseModel):
                 raise ValueError("Texto contiene palabras reservadas SQL")
         return value
 
-    # Validación de status 
+class M_U_CRUD(M_CRUD):
+    pass
 
-
+class M_IP_CRUD(BaseModel):
+    ip: IPvAnyAddress = Field(
+        ...,
+        description="Dirección IP del cliente que genera el registro.",
+        examples=["127.0.0.1"],
+        alias="campo ip cd"
+    )
+    
+    
     @field_serializer('ip')
     def serializer_ip(self, ip):
         return str(ip)
 
-class M_U_CRUD(M_CRUD):
-    pass
 
 class M_UUID(BaseModel):
     id: UUID
