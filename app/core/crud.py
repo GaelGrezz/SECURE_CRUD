@@ -1,3 +1,5 @@
+from datetime import datetime
+import uuid
 from pydantic import ValidationError
 from sqlalchemy import Table, select
 from sqlalchemy.orm import Session
@@ -22,6 +24,10 @@ class BaseCRUD:
             """
             data = data.model_dump()
 
+            data["id"] = str(uuid.uuid4())
+
+            data["r_date"] = datetime.utcnow()
+            
             data["ip"] = ip
 
             data["text"] = DataInsertSecurity.canonicalize_text(data["text"])
