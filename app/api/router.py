@@ -39,18 +39,3 @@ def delete(id: str, request: Request, db: Session=Depends(get_DB)):
     except ValidationError as e:
         raise HTTPException(
             status_code=500, detail="No se ha logrado actualizar el post")
-
-# @router.delete("/{post_id}", status_code=status.HTTP_204_NO_CONTENT, response_description="Post eliminado")
-# def delete_post(post_id: int, db: Session = Depends(get_db), user=Depends(get_current_user)):
-    # repository = PostRepository(db)
-    # post = repository.get(post_id)
-    # if not post:
-        # raise HTTPException(status_code=404, detail="Post no encontrado")
-# 
-    # try:
-        # repository.delete_post(post)
-        # db.commit()
-    # except SQLAlchemyError:
-        # db.rollback()
-        # raise HTTPException(status_code=500, detail="Operación no lograda")
-    # return
