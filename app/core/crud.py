@@ -1,7 +1,9 @@
+from pydantic import ValidationError
 from sqlalchemy import Table
 from sqlalchemy.orm import Session
-from core.db import get_DB
+from utils.c_segurity import DataInsertSecurity
 from models.schemas import M_CRUD, M_U_CRUD
+from sqlalchemy.exc import SQLAlchemyError
 
 class BaseCRUD:
     def __init__(self, table: Table, db: Session):
@@ -9,12 +11,27 @@ class BaseCRUD:
         self.table = table
         
     def create(self, data:M_CRUD):
+        try:
             """
             Crear registro validado por el modelo CRUD.
             """
             data = data.model_dump()
+            
+            data["text"] = DataInsertSecurity.canonicalize_text(data["text"])
+            
+            DataInsertSecurity.validate_text(data["text"])
+            DataInsertSecurity.validate_status(data["status"])
+            DataInsertSecurity.validate_ip(data["ip"])
+            
+            
             self.db.execute(self.table.insert().values(**data))
             self.db.commit()
+        except ValidationError as pydnticErr:
+            raise pydnticErr
+        except (ValueError, SQLAlchemyError) as e:
+            self.db.rollback()
+            raise e
+            
         
     def read(self):
             """

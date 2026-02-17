@@ -20,7 +20,7 @@ engine = create_engine(DATABASE_URL,
     **engine_kargs)
 
 metadata = MetaData()
-T_CRUD = Table("CRUD", metadata, autoload_with=engine)
+table_crud = Table("CRUD", metadata, autoload_with=engine)
 
 
 session_local = sessionmaker(
