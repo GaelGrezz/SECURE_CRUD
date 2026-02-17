@@ -2,9 +2,9 @@ from pydantic import ValidationError
 from sqlalchemy import Table
 from sqlalchemy.orm import Session
 
-from utils.u_d_segurity import DataUDSecurity
-from utils.c_segurity import DataInsertSecurity
-from models.schemas import M_CRUD, M_U_CRUD, M_UUID
+from ..utils.enc_segurity import DataEncryptionService
+from ..utils.c_segurity import DataInsertSecurity
+from ..models.schemas import M_CRUD, M_U_CRUD, M_UUID
 
 from sqlalchemy.exc import SQLAlchemyError
 from uuid import UUID
@@ -28,6 +28,12 @@ class BaseCRUD:
             DataInsertSecurity.validate_status(data["status"])
             DataInsertSecurity.validate_ip(data["ip"])
 
+            # ! Cifrado
+            # data["text"] = DataEncryptionService.encrypt(data["text"])
+            # data["ip"] = DataEncryptionService.encrypt(data["ip"])
+            # data["status"] = DataEncryptionService.encrypt(str(data["status"]))
+ 
+            
             self.db.execute(self.table.insert().values(**data))
             self.db.commit()
         except ValidationError as pydnticErr:
