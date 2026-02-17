@@ -51,7 +51,7 @@ class BaseCRUD:
         result = self.db.execute(query).fetchall()
         return [{"contenido": row[0]} for row in result]
 
-    def update(self, r_id: M_UUID, data: M_U_CRUD):
+    def update(self, r_id: M_UUID, data: M_U_CRUD, ip: M_IP_CRUD):
     #     """
     #     Actualizar registros.
     #     """
@@ -62,16 +62,17 @@ class BaseCRUD:
             raise ValueError("No se ha proporcionado una ID para actualizar.")
 
         data = data.model_dump(exclude_unset=True)
+        data["ip"] = ip
+
+        print("ESTOY DENTRO VAMOOOOOOOOOOOOO")
 
         data["text"] = DataInsertSecurity.canonicalize_text(data["text"])
-
         DataInsertSecurity.validate_text(data["text"])
-        DataInsertSecurity.validate_status(data["status"])
         DataInsertSecurity.validate_ip(data["ip"])
 
         query = (
             self.table.update()
-            .where(self.table.c.id == str(UUID(r_id)))
+            .where(self.table.c.id == r_id)
             .values(**data)
         )
 

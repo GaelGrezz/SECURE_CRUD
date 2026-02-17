@@ -1,7 +1,7 @@
 import re
 from typing import Optional
 from uuid import UUID
-from pydantic import BaseModel, Field, StrictInt, field_serializer, field_validator, IPvAnyAddress
+from pydantic import BaseModel, ConfigDict, Field, StrictInt, field_serializer, field_validator, IPvAnyAddress
 
 class M_CRUD(BaseModel):
     text: str = Field(
@@ -19,6 +19,8 @@ class M_CRUD(BaseModel):
         "str_strip_whitespace": True,
         "extra": "forbid"
     }
+    
+    # model_config = ConfigDict(from_attributes=True)
 
     @field_validator("text")
     def check_forbidden_patterns(cls, value):
@@ -61,5 +63,6 @@ class M_UUID(BaseModel):
     id: UUID
 
 class M_POST(BaseModel):
-    id: UUID
-    text: str
+    text: str = Field(
+        alias="campo"
+    )
