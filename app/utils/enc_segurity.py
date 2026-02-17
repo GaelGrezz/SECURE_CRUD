@@ -5,7 +5,7 @@ import os
 
 from dotenv import load_dotenv
 
-from models.schemas import M_CRUD
+# from models.schemas import M_CRUD
 
 load_dotenv()
 class DataEncryptionService:

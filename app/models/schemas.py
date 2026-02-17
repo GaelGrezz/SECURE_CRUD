@@ -3,7 +3,6 @@ from typing import Optional
 from uuid import UUID
 from pydantic import BaseModel, Field, StrictInt, field_serializer, field_validator, IPvAnyAddress
 
-
 class M_CRUD(BaseModel):
     text: str = Field(
         ...,
@@ -12,18 +11,20 @@ class M_CRUD(BaseModel):
         description="Contenido de la entrada, con un rango permitido entre 10 a 50 dígitos.",
         # todo: Evitar inyecciones de carácteres peligrosos o sqlinyección
         pattern=r'^[A-Za-z0-9\s.,!?-]+$',
-        examples=["Contenido válido con el rango permitido"]
+        examples=["Contenido permitido con el rango aceptable"],
+        alias="campo content"
     )
     
-    status: StrictInt = Field(
-        ...,
-        description="Estado lógico del registro (1 = activo, 0 = inactivo)."
-    )
+    # status: StrictInt = Field(
+    #     ...,
+    #     description="Estado lógico del registro (1 = activo, 0 = inactivo)."
+    # )
     
     ip: IPvAnyAddress = Field(
         ...,
         description="Dirección IP del cliente que genera el registro.",
-        examples=["127.0.0.1"]
+        examples=["127.0.0.1"],
+        alias="campo ip"
     )
     
     model_config = {
@@ -52,11 +53,7 @@ class M_CRUD(BaseModel):
         return value
 
     # Validación de status 
-    @field_validator("status")
-    def validate_status(cls, value):
-        if value not in (0, 1):
-            raise ValueError("Status inválido: debe ser 0 o 1")
-        return value
+
 
     @field_serializer('ip')
     def serializer_ip(self, ip):
