@@ -1,6 +1,7 @@
 import time
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
 
 from .api.router import router
 
@@ -11,6 +12,15 @@ requests_log = {}
 def create_app() -> FastAPI:
     app = FastAPI(title="SECURE CRUD")
     app.include_router(router)
+    
+    origins = ["http://127.0.0.1:8000"]
+    
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins = origins,
+        allow_methods = ["GET", "POST", "PUT", "DELETE"],
+        allow_headers = ["*"]
+    )
     
     @app.middleware("http")
     async def rate_limiter(request: Request, call_next):
