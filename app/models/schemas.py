@@ -67,3 +67,7 @@ class M_U_CRUD(M_CRUD):
 
 class M_UUID(BaseModel):
     id: UUID
+
+class M_POST(BaseModel):
+    id: UUID
+    text: str

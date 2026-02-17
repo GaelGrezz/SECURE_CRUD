@@ -2,9 +2,9 @@ from pydantic import ValidationError
 from sqlalchemy import Table
 from sqlalchemy.orm import Session
 
-from ..utils.enc_segurity import DataEncryptionService
-from ..utils.c_segurity import DataInsertSecurity
-from ..models.schemas import M_CRUD, M_U_CRUD, M_UUID
+from utils.enc_segurity import DataEncryptionService
+from utils.c_segurity import DataInsertSecurity
+from models.schemas import M_CRUD, M_U_CRUD, M_UUID
 
 from sqlalchemy.exc import SQLAlchemyError
 from uuid import UUID
@@ -46,8 +46,9 @@ class BaseCRUD:
         """
         Regresar registros.
         """
-        query = self.table.select()
-        return self.db.execute(query).fetchall()
+        query = self.table.select().with_only_columns(self.table.c.text)
+        result = self.db.execute(query).fetchall()
+        return [{"contenido": row[0]} for row in result]
 
     def update(self, r_id: M_UUID, data: M_U_CRUD):
     #     """
