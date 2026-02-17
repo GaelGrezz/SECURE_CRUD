@@ -1,5 +1,6 @@
 import re
 from typing import Optional
+from uuid import UUID
 from pydantic import BaseModel, Field, StrictInt, field_serializer, field_validator, IPvAnyAddress
 
 
@@ -62,4 +63,7 @@ class M_CRUD(BaseModel):
         return str(ip)
 
 class M_U_CRUD(M_CRUD):
-    text: Optional[str] = Field(None, min_length=10, max_length=50)
+    pass
+
+class M_UUID(BaseModel):
+    id: UUID
