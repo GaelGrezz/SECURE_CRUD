@@ -66,3 +66,7 @@ class M_POST(BaseModel):
     text: str = Field(
         alias="campo"
     )
+    
+class M_R_CRUD(BaseModel):
+    id: UUID
+    contenido: str

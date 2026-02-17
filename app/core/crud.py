@@ -1,10 +1,10 @@
 from pydantic import ValidationError
-from sqlalchemy import Table
+from sqlalchemy import Table, select
 from sqlalchemy.orm import Session
 
 from ..utils.enc_segurity import DataEncryptionService
 from ..utils.c_segurity import DataInsertSecurity
-from ..models.schemas import  M_IP_CRUD, M_U_CRUD, M_UUID
+from ..models.schemas import  M_IP_CRUD, M_R_CRUD, M_U_CRUD, M_UUID
 
 from sqlalchemy.exc import SQLAlchemyError
 from uuid import UUID
@@ -43,13 +43,18 @@ class BaseCRUD:
             self.db.rollback()
             raise e
 
-    def read(self):
+    def read(self) -> list[M_R_CRUD]:
         """
         Regresar registros.
         """
-        query = self.table.select().with_only_columns(self.table.c.text)
+        query = (
+            select(self.table.c.id, self.table.c.text).where(self.table.c.status ==1)
+        )
         result = self.db.execute(query).fetchall()
-        return [{"contenido": row[0]} for row in result]
+        
+        return [
+            M_R_CRUD(id=row.id, contenido=row.text) for row in result
+        ]
 
     def update(self, r_id: M_UUID, data: M_U_CRUD, ip: M_IP_CRUD):
     #     """

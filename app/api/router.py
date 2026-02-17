@@ -1,3 +1,4 @@
+from typing import List
 from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, Path, Query, status, Request
 from pydantic import ValidationError
@@ -5,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.core.crud import BaseCRUD
 from app.core.db import get_DB, table_crud
-from app.models.schemas import M_CRUD, M_IP_CRUD, M_POST
+from app.models.schemas import M_CRUD, M_IP_CRUD, M_POST, M_R_CRUD
 
 router = APIRouter(prefix="/content", tags=["CRUD"])
 
@@ -18,6 +19,12 @@ def create(data: M_CRUD, request: Request, db: Session = Depends(get_DB)):
         return {"message": "Registro creado correctamente."}
     except Exception as e:
         raise HTTPException(status_code=400, detail= str(e))
+
+@router.get("/registros", response_model=List[M_R_CRUD])
+def read(db: Session  = Depends(get_DB)):
+    crud = BaseCRUD(table=table_crud, db=db)
+    results = crud.read()
+    return results
 
 @router.put("/{id}", response_model=M_POST, response_description="Registro actualizado.")
 def update(id: str, request: Request, data: M_POST, db: Session = Depends(get_DB)):
