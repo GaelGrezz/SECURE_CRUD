@@ -12,7 +12,7 @@ class M_CRUD(BaseModel):
         # todo: Evitar inyecciones de carácteres peligrosos o sqlinyección
         pattern=r'^[A-Za-z0-9\s.,!?-]+$',
         examples=["Contenido permitido con el rango aceptable"],
-        alias="campo content"
+        alias="campo"
     )
     
     model_config = {
