@@ -11,15 +11,16 @@ from app.utils.service_key import create_access_token, verify_token
 from app.models.schemas import M_CRUD, M_IP_CRUD, M_POST, M_R_CRUD
 
 router = APIRouter(prefix="/content", tags=["CRUD"])
+sec_router = APIRouter(prefix="/secure/content", tags=["SCURE"])
 oauth2_scheme = APIKeyHeader(name="Authorization")
 
-@router.post("/token")
+@sec_router.post("/token")
 def get_token():
     token = create_access_token()
     return {"access_token": token, 
             "token_type": "bearer"}
 
-@router.get("/secure-endpoint")
+@sec_router.get("/secure-endpoint")
 def secure_endpoint(token: str = Depends(oauth2_scheme)):
     client = verify_token(token)
     if client is None:

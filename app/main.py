@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 
-from .api.router import router
+from .api.router import router, sec_router
 
 load_dotenv()
 
@@ -11,6 +11,7 @@ requests_log = {}
 
 def create_app() -> FastAPI:
     app = FastAPI(title="SECURE CRUD")
+    app.include_router(sec_router)
     app.include_router(router)
     
     origins = ["http://127.0.0.1:8000"]
