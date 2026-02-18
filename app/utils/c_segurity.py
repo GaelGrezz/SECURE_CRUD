@@ -1,3 +1,4 @@
+from datetime import datetime
 import re
 from abc import ABC
 import uuid
@@ -62,3 +63,17 @@ class DataInsertSecurity(ABC):
         except ValueError:
             raise HTTPException(status_code=422, detail="ID inválido: no es un formato permitido.")
         return str(uuid_obj)
+    
+    @staticmethod
+    def validate_r_date(r_date):
+        if not isinstance(r_date, datetime):
+            raise HTTPException(
+                status_code=423,
+                detail="Fecha no aceptable: se espera una fecha."
+            )
+        if r_date > datetime.utcnow():
+            raise HTTPException(
+                status_code=423,
+                detail="Fecha no aceptable: se espera una fecha actual."
+            )
+        return r_date

@@ -30,10 +30,12 @@ class BaseCRUD:
             
             data["ip"] = ip
 
+            data["id"] = DataInsertSecurity.validate_id(data["id"])
             data["text"] = DataInsertSecurity.canonicalize_text(data["text"])
             DataInsertSecurity.validate_text(data["text"])
             DataInsertSecurity.validate_ip(data["ip"])
-            data["id"] = DataInsertSecurity.validate_id(data["id"])
+            data
+            DataInsertSecurity.validate_r_date(data["r_date"])
 
             # ! Cifrado
             # data["text"] = DataEncryptionService.encrypt(data["text"])
