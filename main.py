@@ -21,7 +21,7 @@ def create_app() -> FastAPI:
     async def rate_limiter(request: Request, call_next):
         client_ip = request.headers.get("X-Forwarded-For", request.client.host).split(",")[0]
         
-        if client_ip == "5.247.111.159" or request.method == "OPTIONS":
+        if client_ip == "35.247.111.159" or request.method == "OPTIONS":
             return await call_next(request)
         
         now = time.time()
