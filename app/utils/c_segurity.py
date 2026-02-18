@@ -1,5 +1,6 @@
 import re
 from abc import ABC
+import uuid
 
 from fastapi import HTTPException
 
@@ -53,3 +54,11 @@ class DataInsertSecurity(ABC):
         cleaned = text.strip()
         cleaned = " ".join(cleaned.split())
         return cleaned
+    
+    @staticmethod
+    def validate_id(id_value: str):
+        try:
+            uuid_obj = uuid.UUID(id_value, version=4)
+        except ValueError:
+            raise HTTPException(status_code=422, detail="ID inválido: no es un formato permitido.")
+        return str(uuid_obj)
