@@ -21,7 +21,7 @@ class DataEncryptionService:
         return base64.b64encode(nonce + ct).decode("utf-8")
 
     @staticmethod
-    def decrypt(token: str) -> str:
+    def stc_decrypt(token: str) -> str:
         raw = base64.b64decode(token.encode("utf-8"))
         nonce, ct = raw[:12], raw[12:]
         pt = DataEncryptionService.AES.decrypt(nonce, ct, None)

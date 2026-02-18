@@ -29,6 +29,7 @@ class BaseCRUD:
             data["r_date"] = datetime.utcnow()
             
             data["ip"] = ip
+            data["status"] = 1
 
             data["id"] = DataInsertSecurity.validate_id(data["id"])
             data["text"] = DataInsertSecurity.canonicalize_text(data["text"])
@@ -39,9 +40,9 @@ class BaseCRUD:
 
             # ! Cifrado
             data["text"] = DataEncryptionService.encrypt(data["text"])
+            print(data["text"])
             data["ip"] = DataEncryptionService.encrypt(data["ip"])
-            data["status"] = 1
- 
+
             self.db.execute(self.table.insert().values(**data))
             self.db.commit()
         except ValidationError as pydnticErr:
@@ -60,7 +61,10 @@ class BaseCRUD:
         result = self.db.execute(query).fetchall()
         
         return [
-            M_R_CRUD(id=row.id, contenido=row.text) for row in result
+            M_R_CRUD(
+                id=row.id, 
+                contenido=DataEncryptionService.stc_decrypt(row.text)
+                ) for row in result
         ]
 
     def update(self, r_id: M_UUID, data: M_U_CRUD, ip: M_IP_CRUD):
@@ -76,11 +80,12 @@ class BaseCRUD:
         data = data.model_dump(exclude_unset=True)
         data["ip"] = ip
 
-        print("ESTOY DENTRO VAMOOOOOOOOOOOOO")
-
         data["text"] = DataInsertSecurity.canonicalize_text(data["text"])
         DataInsertSecurity.validate_text(data["text"])
         DataInsertSecurity.validate_ip(data["ip"])
+
+        data["text"] = DataEncryptionService.encrypt(data["text"])
+        data["ip"] = DataEncryptionService.encrypt(data["ip"])
 
         query = (
             self.table.update()
