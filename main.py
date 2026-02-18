@@ -20,7 +20,8 @@ def create_app() -> FastAPI:
     @app.middleware("http")
     async def rate_limiter(request: Request, call_next):
         client_ip = request.headers.get("X-Forwarded-For", request.client.host).split(",")[0]
-        
+
+        print("Cliente IP: ", client_ip)
         if client_ip == "34.82.84.118" or request.method == "OPTIONS":
             return await call_next(request)
         
