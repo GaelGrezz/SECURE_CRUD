@@ -38,11 +38,10 @@ class BaseCRUD:
             DataInsertSecurity.validate_r_date(data["r_date"])
 
             # ! Cifrado
-            # data["text"] = DataEncryptionService.encrypt(data["text"])
-            # data["ip"] = DataEncryptionService.encrypt(data["ip"])
-            # data["status"] = DataEncryptionService.encrypt(str(data["status"]))
- 
+            data["text"] = DataEncryptionService.encrypt(data["text"])
+            data["ip"] = DataEncryptionService.encrypt(data["ip"])
             data["status"] = 1
+ 
             self.db.execute(self.table.insert().values(**data))
             self.db.commit()
         except ValidationError as pydnticErr:
