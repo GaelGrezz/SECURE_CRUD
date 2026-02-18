@@ -5,10 +5,10 @@ from fastapi.security import APIKeyHeader, OAuth2PasswordBearer
 from pydantic import ValidationError
 from sqlalchemy.orm import Session
 
-from app.core.crud import BaseCRUD
-from app.core.db import get_DB, table_crud
-from app.utils.service_key import create_access_token, verify_token
-from app.models.schemas import M_CRUD, M_IP_CRUD, M_POST, M_R_CRUD
+from ..core.crud import BaseCRUD
+from ..core.db import get_DB, table_crud
+from ..utils.service_key import create_access_token, verify_token
+from ..models.schemas import M_CRUD, M_IP_CRUD, M_POST, M_R_CRUD
 
 router = APIRouter(prefix="/content", tags=["CRUD"])
 sec_router = APIRouter(prefix="/secure/content", tags=["SCURE"])
