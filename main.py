@@ -11,24 +11,39 @@ requests_log = {}
 
 def create_app() -> FastAPI:
     app = FastAPI(title="SECURE CRUD")
+    
+    # 1. Rutas
     app.include_router(sec_router)
     app.include_router(router)
     
-    origins = ["http://127.0.0.1:8000",
-               "https://crud-villa-three.vercel.app"]
+    # 2. CORS - Añadimos OPTIONS a los métodos permitidos
+    origins = [
+        "http://127.0.0.1:8000",
+        "https://crud-villa-three.vercel.app"
+    ]
     
     app.add_middleware(
         CORSMiddleware,
-        allow_origins = origins,
-        allow_methods = ["GET", "POST", "PUT", "DELETE"],
-        allow_headers=["Authorization", "Content-Type"], # Permitimos Authorization para JWT
+        allow_origins=origins,
+        allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"], # <-- Crucial para el navegador
+        allow_headers=["Authorization", "Content-Type"],
     )
     
+    # 3. Rate Limiter mejorado
     @app.middleware("http")
     async def rate_limiter(request: Request, call_next):
-        client_ip = request.client.host
+        # SEGURIDAD: Obtenemos la IP real del usuario.
+        # En Render, request.client.host es la IP del servidor interno, no la del usuario.
+        # X-Forwarded-For nos da la IP real del atacante.
+        client_ip = request.headers.get("X-Forwarded-For", request.client.host).split(",")[0]
         
-        if client_ip == "127.0.0.1": # <- ! Quitar de dev
+        # Saltamos el límite en local
+        if client_ip == "127.0.0.1":
+            return await call_next(request)
+        
+        # SEGURIDAD: No bloqueamos OPTIONS. 
+        # Es solo una consulta de permisos del navegador, no toca tus datos.
+        if request.method == "OPTIONS":
             return await call_next(request)
         
         now = time.time()
@@ -36,9 +51,11 @@ def create_app() -> FastAPI:
         if client_ip not in requests_log:
             requests_log[client_ip] = []
             
-        requests_log[client_ip] = [t for t in requests_log[client_ip] if now -t < 10]
+        # Limpiamos logs de más de 10 segundos
+        requests_log[client_ip] = [t for t in requests_log[client_ip] if now - t < 10]
         requests_log[client_ip].append(now)
         
+        # Bloqueamos si hay más de 2 peticiones reales en 10 segundos
         if len(requests_log[client_ip]) > 2:
             raise HTTPException(status_code=429, detail="Muchos intentos realizados.")
         
