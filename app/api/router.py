@@ -60,7 +60,7 @@ def update(id: str, request: Request, data: M_POST, client: str = Depends(verify
     return {"campo": "Registro actualizado"}
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT, response_description="Registro eliminado")
-def delete(id: str, request: Request,  client: str = Depends(verify_token), db: Session=Depends(get_DB)):
+def delete(id: str, request: Request, db: Session=Depends(get_DB)):
     crud = BaseCRUD(table=table_crud, db=db)
     try:
         crud.delete(id)
