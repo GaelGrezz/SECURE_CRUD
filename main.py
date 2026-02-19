@@ -10,7 +10,9 @@ load_dotenv()
 requests_log = {}
 
 def create_app() -> FastAPI:
-    app = FastAPI(title="SECURE CRUD")
+    app = FastAPI(title="SECURE CRUD",
+                 docs_url = "None",
+                 redoc_url = "None")
     
     # 1. Rutas
     app.include_router(sec_router)
