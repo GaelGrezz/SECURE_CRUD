@@ -9,7 +9,7 @@ from fastapi import HTTPException
 class DataInsertSecurity(ABC):
     @staticmethod
     def validate_text(text: str):
-        if not re.match(r'^[A-Za-z0-9\s.,!?-]+$', text):
+        if not re.match(r'^[A-Za-zñÑ0-9\s.,!?-]+$', text):
             raise HTTPException(
                 status_code=500, detail="El texto contiene carácteres no permitidos")
 

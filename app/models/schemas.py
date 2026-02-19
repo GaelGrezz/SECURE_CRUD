@@ -10,7 +10,7 @@ class M_CRUD(BaseModel):
         max_length=50,
         description="Contenido de la entrada, con un rango permitido entre 10 a 50 dígitos.",
         # todo: Evitar inyecciones de carácteres peligrosos o sqlinyección
-        pattern=r'^[A-Za-z0-9\s.,!?-]+$',
+        pattern=r'^[A-Za-zñÑ0-9\s.,!?-]+$',
         examples=["Contenido permitido con el rango aceptable"],
         alias="campo"
     )
