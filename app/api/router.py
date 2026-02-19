@@ -42,7 +42,7 @@ def create(
         raise HTTPException(status_code=400, detail= str(e))
 
 @router.get("/registros", response_model=List[M_R_CRUD])
-def read(client: str = Depends(verify_token), db: Session  = Depends(get_DB)):
+def read(db: Session  = Depends(get_DB)):
     crud = BaseCRUD(table=table_crud, db=db)
     results = crud.read()
     return results

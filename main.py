@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.router import router, sec_router
+from .app.api.router import router, sec_router
 
 load_dotenv()
 
