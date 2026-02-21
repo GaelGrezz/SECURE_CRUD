@@ -14,11 +14,9 @@ def create_app() -> FastAPI:
                  docs_url = None,
                  redoc_url = None)
     
-    # 1. Rutas
     app.include_router(sec_router)
     app.include_router(router)
     
-    # 2. Rate Limiter (Definido arriba para que se ejecute DESPUÉS del CORS)
     @app.middleware("http")
     async def rate_limiter(request: Request, call_next):
         client_ip = request.headers.get("X-Forwarded-For", request.client.host).split(",")[0]
@@ -39,8 +37,6 @@ def create_app() -> FastAPI:
         
         return await call_next(request)
 
-    # 3. Tu CORS (Tal cual lo tenías, pero al FINAL del código)
-    # Esto garantiza que sea lo PRIMERO que se ejecute al recibir la petición.
     origins = [
         "http://127.0.0.1:8000",
         "https://crud-villa-three.vercel.app"
